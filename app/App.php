@@ -7,6 +7,7 @@ class App {
         if (!empty($routes['default_controller'])) {
             $this->__controller = $routes['default_controller'];
         }
+        // default action for controller
         $this->__action = 'index';
         $this->__params = [];
         $this->handleUrl();
@@ -36,8 +37,13 @@ class App {
         }
         if (file_exists('app/controllers/'.$this->__controller.'.php')) {
             require_once 'controllers/'.($this->__controller).'.php';
-            $this->__controller = new $this->__controller();
-            unset($urlArr[0]);
+            // check class $this->__controller exist
+            if (class_exists($this->__controller)) {
+                $this->__controller = new $this->__controller();
+                unset($urlArr[0]);
+            } else {
+                $this->loadError();
+            }
         } else {
             $this->loadError();
         }
@@ -49,10 +55,15 @@ class App {
         // handle params
         $this->__params = array_values($urlArr);
 
-        call_user_func_array([$this->__controller, $this->__action], $this->__params);
-        echo '<pre>';
-        print_r($this->__params);
-        echo '</pre>';
+        // check method exist
+        if (method_exists($this->__controller, $this->__action)) {
+            call_user_func_array([$this->__controller, $this->__action], $this->__params);
+        } else {
+            $this->loadError();
+        }
+//        echo '<pre>';
+//        print_r($this->__params);
+//        echo '</pre>';
     }
     public function loadError($name='404')
     {
