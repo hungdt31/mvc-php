@@ -13,6 +13,7 @@ class ProductModel {
         return $this->_data;
     }
     public function getDetail($id) {
+        if (!isset($this->_data[$id])) return 'Product not found';
         return $this->_data[$id];
     }
 }
