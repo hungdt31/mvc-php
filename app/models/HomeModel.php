@@ -2,15 +2,17 @@
 /*
  * inheritance from class model
  */
-class HomeModel {
-    protected $_table = 'product';
+class HomeModel extends Model {
+    protected $_table = 'users';
     protected $_data = [
         'Item 1',
         'Item 2',
         'Item 3',
     ];
     public function getList() {
-        return $this->_data;
+        $sql = "SELECT * FROM $this->_table";
+        $result = $this->db->execute($sql);
+        return $result;
     }
     public function getDetail($id) {
         // check ID valid

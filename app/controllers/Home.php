@@ -1,15 +1,15 @@
 <?php
 class Home extends Controller{
     public $model_home;
+    public $data;
     public function __construct() {
         $this->model_home = $this->model('HomeModel');
-//        var_dump($this->model_home);
     }
     public function index() {
-        $data = $this->model_home->getList();
-        echo '<pre>';
-        print_r($data);
-        echo '</pre>';
+        $this->data['sub_content']['user'] = $this->model_home->getList();
+        $this->data['page_title'] = 'Trang chủ';
+        $this->data['content'] = 'home/index';
+        $this->render('layouts/client_layout', $this->data);
     }
     public function detail($id='', $slug='') {
         echo 'id: ',$id.'<br/>'.'slug: '.$slug. '<br/>';

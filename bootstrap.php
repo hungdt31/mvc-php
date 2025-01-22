@@ -17,7 +17,20 @@ if (!defined('_WEB_ROOT')) {
     define('_WEB_ROOT', $web_root);
 }
 
-require_once _DIR_ROOT . '/configs/routes.php';
-require_once _DIR_ROOT . '/core/Route.php';
-require_once _DIR_ROOT . '/core/Controller.php';
+$dir_arr = [
+    'core',
+    'configs',
+];
+foreach ($dir_arr as $dir) {
+    if (is_dir(_DIR_ROOT.'/'.$dir)) {
+        $dir_files = scandir(_DIR_ROOT.'/'.$dir);
+        if (!empty($dir_files)) {
+            foreach ($dir_files as $file) {
+                if ($file != '.' && $file != '..' && file_exists(_DIR_ROOT.'/'.$dir.'/'.$file)) {
+                    require_once _DIR_ROOT.'/'.$dir.'/'.$file;
+                }
+            }
+        }
+    }
+}
 require_once _DIR_ROOT . '/app/App.php';

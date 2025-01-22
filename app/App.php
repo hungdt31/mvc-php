@@ -29,9 +29,38 @@ class App {
         $url = $this->getUrl();
         $url = $this->__routes->handleRoute($url);
 
+//        echo $url;
         $urlArr = array_filter(explode('/', $url));
         $urlArr = array_values($urlArr);
+//        echo '<pre>'.print_r($urlArr, true).'</pre>';
 
+        $urlCheck = '';
+        if (!empty($urlArr)) {
+            for ($i = 0; $i < count($urlArr); $i++) {
+                $urlCheck .= $urlArr[$i] . '/';
+                // Loại bỏ dấu / cuối cùng
+                $fileCheck = rtrim($urlCheck, '/');
+                // Chia URL thành các phần tử
+                $fileArr = explode('/', $fileCheck);
+                // Viết hoa chữ cái đầu của phần tử cuối cùng
+                $fileArr[count($fileArr) - 1] = ucfirst($fileArr[count($fileArr) - 1]);
+                // Gộp các phần tử trong $fileArr thành một chuỗi, ngăn cách bởi dấu /
+                $fileCheck = implode('/', $fileArr);
+
+                if (!empty($urlArr[$i - 1])) {
+                    unset($urlArr[$i - 1]);
+                }
+
+                if (file_exists('app/controllers/' . ($fileCheck) . '.php')) {
+                    $urlCheck = $fileCheck;
+                    break;
+                }
+            }
+            $urlArr = array_values($urlArr);
+        }
+
+//        echo $urlCheck. '<br/>';
+//        echo '<pre>'.print_r($urlArr, true).'</pre>';
         // handle controller
         if (!empty($urlArr[0])){
             // convert to lowercase string
@@ -40,9 +69,10 @@ class App {
         } else {
             $this->__controller = ucfirst($this->__controller);
         }
-        if (file_exists('app/controllers/'.$this->__controller.'.php')) {
-            echo $this->__controller;
-            require_once 'controllers/'.($this->__controller).'.php';
+
+        if (file_exists('app/controllers/'.$urlCheck.'.php')) {
+            // echo $this->__controller;
+            require_once 'controllers/'.($urlCheck).'.php';
             // check class $this->__controller exist
             if (class_exists($this->__controller)) {
                 $this->__controller = new $this->__controller();
