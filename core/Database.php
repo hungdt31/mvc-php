@@ -23,7 +23,9 @@ class Database
             ];
 
             // Câu lệnh kết nối
-            $this->conn = new PDO($dsn, $db_config['user'], $db_config['pass'], $options);
+            $pass = $db_config['pass'] ?? ''; // Dùng toán tử null coalescing để tránh lỗi
+            $this->conn = new PDO($dsn, $db_config['user'], $pass, $options);
+            // $this->conn = new mysqli($db_config['host'], $db_config['user'], $db_config['pass'], $db_config['db']);
         } catch (Exception $exception) {
             error_log($exception->getMessage(), 3, "error.log"); // Ghi log lỗi vào file
             echo "Không thể kết nối cơ sở dữ liệu, vui lòng thử lại sau.";
@@ -54,6 +56,7 @@ class Database
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $exception) {
             error_log($exception->getMessage(), 3, "error.log"); // Ghi log lỗi vào file
+            include_once 'app/errors/disconnect_db.php';
             return false;
         }
     }

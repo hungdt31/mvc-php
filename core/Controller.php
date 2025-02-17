@@ -10,7 +10,7 @@ class Controller {
         return $model;
     }
     public function render($view, $data=[]) {
-//        echo '<pre>'.print_r($data, true).'</pre>';
+        // echo '<pre>'.print_r($data, true).'</pre>';
         extract($data);
         if (file_exists(_DIR_ROOT.'/app/views/'.$view.'.php')) {
             require_once _DIR_ROOT.'/app/views/'.$view.'.php';
